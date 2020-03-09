@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: app-green
+    version: '1.3'
+  name: app
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      run: app
+      version: '1.3'
+  template:
+    metadata:
+      labels:
+        run: app
+        version: '1.3'
+    spec:
+      containers:
+      - name: app
+        image: quay.io/nickmramirez/webapp:1.3
+        ports:
+        - containerPort: 80
+        lifecycle:
+          preStop:
+            exec:
+              command: ["PID=`pidof node`", "kill -SIGTERM $PID"]
